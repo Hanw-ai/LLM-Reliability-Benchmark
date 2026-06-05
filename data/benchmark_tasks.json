@@ -1,0 +1,32 @@
+[
+  {
+    "task_id": "task_001",
+    "category": "prompt_robustness",
+    "prompt": "Summarize OpenAI in 3 sentences.",
+    "expected": "Accurate summary"
+  },
+  {
+    "task_id": "task_002",
+    "category": "prompt_robustness",
+    "prompt": "Explain OpenAI briefly.",
+    "expected": "Accurate summary"
+  },
+  {
+    "task_id": "task_003",
+    "category": "tool_robustness",
+    "prompt": "Calculate monthly electricity cost.",
+    "expected": "Correct calculation"
+  },
+  {
+    "task_id": "task_004",
+    "category": "context_robustness",
+    "prompt": "Answer based on long context.",
+    "expected": "Grounded answer"
+  },
+  {
+    "task_id": "task_005",
+    "category": "consistency",
+    "prompt": "Who founded OpenAI?",
+    "expected": "Consistent answer"
+  }
+]
