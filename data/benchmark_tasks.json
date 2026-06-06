@@ -2,31 +2,64 @@
   {
     "task_id": "task_001",
     "category": "prompt_robustness",
+    "variant": "original",
     "prompt": "Summarize OpenAI in 3 sentences.",
     "expected": "Accurate summary"
   },
   {
     "task_id": "task_002",
     "category": "prompt_robustness",
-    "prompt": "Explain OpenAI briefly.",
+    "variant": "rephrased",
+    "prompt": "Briefly explain what OpenAI does.",
     "expected": "Accurate summary"
   },
   {
     "task_id": "task_003",
-    "category": "tool_robustness",
-    "prompt": "Calculate monthly electricity cost.",
-    "expected": "Correct calculation"
+    "category": "prompt_robustness",
+    "variant": "noisy",
+    "prompt": "plz explain openai super briefly but dont overdo it",
+    "expected": "Accurate summary"
   },
   {
     "task_id": "task_004",
-    "category": "context_robustness",
-    "prompt": "Answer based on long context.",
-    "expected": "Grounded answer"
+    "category": "tool_robustness",
+    "tool_available": true,
+    "prompt": "Calculate monthly electricity cost for a 1500W heater used 1 hour per day.",
+    "expected": "Correct calculation"
   },
   {
     "task_id": "task_005",
-    "category": "consistency",
-    "prompt": "Who founded OpenAI?",
-    "expected": "Consistent answer"
+    "category": "tool_robustness",
+    "tool_available": false,
+    "prompt": "Calculate monthly electricity cost for a 1500W heater used 1 hour per day.",
+    "expected": "Graceful fallback without calculator"
+  },
+  {
+    "task_id": "task_006",
+    "category": "tool_robustness",
+    "tool_available": "wrong_tool",
+    "prompt": "Calculate monthly electricity cost using only a search tool.",
+    "expected": "Detect wrong tool and avoid unsupported answer"
+  },
+  {
+    "task_id": "task_007",
+    "category": "context_robustness",
+    "context_length": 1000,
+    "prompt": "Answer based on a short retrieved context.",
+    "expected": "Grounded answer"
+  },
+  {
+    "task_id": "task_008",
+    "category": "context_robustness",
+    "context_length": 10000,
+    "prompt": "Answer based on a medium-length retrieved context.",
+    "expected": "Grounded answer"
+  },
+  {
+    "task_id": "task_009",
+    "category": "context_robustness",
+    "context_length": 50000,
+    "prompt": "Answer based on a very long retrieved context.",
+    "expected": "Grounded answer"
   }
 ]
