@@ -2,8 +2,9 @@ import json
 
 
 class ReliabilityBenchmark:
-    def __init__(self, data_path):
+    def __init__(self, data_path, model_name="gpt-4.1"):
         self.data_path = data_path
+        self.model_name = model_name
 
     def load_tasks(self):
         with open(self.data_path, "r") as file:
@@ -90,19 +91,20 @@ class ReliabilityBenchmark:
     def simulate_context_robustness(self, task):
         context_length = task.get("context_length", 0)
 
-        if context_length <= 1000:
+        if self.model_name == "gpt-4.1" and context_length <= 50000:
             return {
                 "correct": True,
                 "consistent": True,
                 "failure_reason": None
-            }
+           }
 
-        if context_length <= 10000:
+        if self.model_name == "claude-3.5" and context_length <= 10000:
             return {
                 "correct": True,
                 "consistent": True,
                 "failure_reason": None
             }
+            
 
         return {
             "correct": False,
@@ -119,6 +121,7 @@ class ReliabilityBenchmark:
 
             results.append(
                 {
+                    "model": self.model_name,
                     "task_id": task["task_id"],
                     "category": task["category"],
                     "correct": simulated_result["correct"],
