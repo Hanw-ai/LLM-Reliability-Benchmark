@@ -82,3 +82,29 @@ def compute_reliability_score(
         + tool_robustness * 0.15
         + context_robustness * 0.15
     ) * 100
+
+  def compute_model_summary(model_name, results):
+    accuracy = compute_accuracy(results)
+    consistency = compute_consistency_score(results)
+    prompt_robustness = compute_prompt_robustness(results)
+    tool_robustness = compute_tool_robustness(results)
+    context_robustness = compute_context_robustness(results)
+
+    reliability_score = compute_reliability_score(
+        accuracy,
+        consistency,
+        prompt_robustness,
+        tool_robustness,
+        context_robustness,
+    )
+
+    return {
+        "model": model_name,
+        "accuracy": accuracy,
+        "consistency": consistency,
+        "prompt_robustness": prompt_robustness,
+        "tool_robustness": tool_robustness,
+        "context_robustness": context_robustness,
+        "reliability_score": reliability_score,
+        "failure_breakdown": compute_failure_breakdown(results),
+    }
