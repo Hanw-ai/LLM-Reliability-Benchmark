@@ -1,28 +1,44 @@
-def generate_report(metrics, results, output_path):
-    report = f"""# LLM Reliability Benchmark Report
+def generate_report(model_summaries, all_results, output_path):
+    report = """# LLM Reliability Benchmark Report
 
-## Summary
+## Model Reliability Leaderboard
 
-| Metric | Value |
-|---|---:|
-| Accuracy | {metrics["accuracy"]:.2%} |
-| Consistency | {metrics["consistency"]:.2%} |
-| Prompt Robustness | {metrics["prompt_robustness"]:.2%} |
-| Tool Robustness | {metrics["tool_robustness"]:.2%} |
-| Context Robustness | {metrics["context_robustness"]:.2%} |
-| Reliability Score | {metrics["reliability_score"]:.2f} |
-
-## Failure Breakdown
-
+| Model | Accuracy | Consistency | Prompt Robustness | Tool Robustness | Context Robustness | Judge Agreement | Reliability Score |
+|---|---:|---:|---:|---:|---:|---:|---:|
 """
 
-    for failure_reason, count in metrics["failure_breakdown"].items():
-        report += f"- {failure_reason}: {count}\n"
+    sorted_summaries = sorted(
+        model_summaries,
+        key=lambda x: x["reliability_score"],
+        reverse=True
+    )
 
-    report += "\n## Task-Level Results\n\n"
+    for summary in sorted_summaries:
+        report += (
+            f"| {summary['model']} "
+            f"| {summary['accuracy']:.2%} "
+            f"| {summary['consistency']:.2%} "
+            f"| {summary['prompt_robustness']:.2%} "
+            f"| {summary['tool_robustness']:.2%} "
+            f"| {summary['context_robustness']:.2%} "
+            f"| {summary['judge_agreement']:.2%} "
+            f"| {summary['reliability_score']:.2f} |\n"
+        )
 
-    for result in results:
-        report += f"### {result['task_id']}\n\n"
+    report += "\n## Failure Breakdown by Model\n\n"
+
+    for summary in sorted_summaries:
+        report += f"### {summary['model']}\n\n"
+
+        for failure_reason, count in summary["failure_breakdown"].items():
+            report += f"- {failure_reason}: {count}\n"
+
+        report += "\n"
+
+    report += "## Task-Level Results\n\n"
+
+    for result in all_results:
+        report += f"### {result['model']} / {result['task_id']}\n\n"
         report += f"- Category: {result['category']}\n"
         report += f"- Correct: {result['correct']}\n"
         report += f"- Consistent: {result['consistent']}\n"
@@ -31,13 +47,15 @@ def generate_report(metrics, results, output_path):
 
     report += """## Interpretation
 
-This benchmark evaluates LLM reliability across three robustness dimensions:
+This benchmark compares simulated LLM systems across reliability dimensions:
 
-- Prompt robustness: stability under prompt variation
-- Tool robustness: behavior under tool failure or wrong-tool conditions
-- Context robustness: degradation under long-context settings
+- Prompt robustness
+- Tool robustness
+- Context robustness
+- Judge agreement
+- Overall reliability score
 
-The reliability score combines accuracy, consistency, and robustness-specific metrics.
+The leaderboard helps compare model behavior under different evaluation stress tests.
 """
 
     with open(output_path, "w") as file:
