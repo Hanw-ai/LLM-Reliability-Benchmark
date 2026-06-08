@@ -1,55 +1,49 @@
 from src.benchmark import ReliabilityBenchmark
-from src.metrics import (
-    compute_accuracy,
-    compute_consistency_score,
-    compute_failure_breakdown,
-    compute_prompt_robustness,
-    compute_tool_robustness,
-    compute_context_robustness,
-    compute_reliability_score,
-)
+from src.metrics import compute_model_summary
+from src.judges import compute_judge_agreement
 from src.report import generate_report
 
 
 def main():
-    benchmark = ReliabilityBenchmark(
-        "data/benchmark_tasks.json"
-    )
+    models = [
+        "gpt-4.1",
+        "claude-3.5",
+        "gemini-1.5"
+    ]
 
-    results = benchmark.run()
+    all_model_summaries = []
+    all_results = []
 
-    accuracy = compute_accuracy(results)
-    consistency = compute_consistency_score(results)
-    prompt_robustness = compute_prompt_robustness(results)
-    tool_robustness = compute_tool_robustness(results)
-    context_robustness = compute_context_robustness(results)
+    for model_name in models:
+        benchmark = ReliabilityBenchmark(
+            "data/benchmark_tasks.json",
+            model_name=model_name
+        )
 
-    reliability_score = compute_reliability_score(
-        accuracy,
-        consistency,
-        prompt_robustness,
-        tool_robustness,
-        context_robustness,
-    )
+        results = benchmark.run()
 
-    metrics = {
-        "accuracy": accuracy,
-        "consistency": consistency,
-        "prompt_robustness": prompt_robustness,
-        "tool_robustness": tool_robustness,
-        "context_robustness": context_robustness,
-        "reliability_score": reliability_score,
-        "failure_breakdown": compute_failure_breakdown(results),
-    }
+        model_summary = compute_model_summary(
+            model_name,
+            results
+        )
+
+        model_summary["judge_agreement"] = compute_judge_agreement(
+            results
+        )
+
+        all_model_summaries.append(model_summary)
+        all_results.extend(results)
 
     generate_report(
-        metrics,
-        results,
+        all_model_summaries,
+        all_results,
         "reports/reliability_report.md"
     )
 
-    print("LLM Reliability Benchmark Results")
-    print(metrics)
+    print("LLM Reliability Leaderboard")
+    for summary in all_model_summaries:
+        print(summary)
+
     print("Report generated: reports/reliability_report.md")
 
 
