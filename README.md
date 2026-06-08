@@ -21,3 +21,23 @@ This benchmark evaluates three reliability dimensions:
 | Tool Robustness | Accuracy under tool failures |
 | Context Robustness | Accuracy under long-context conditions |
 | Reliability Score | Weighted score combining accuracy, consistency, and robustness |
+
+## V3: Judge Agreement + Model Comparison
+
+The benchmark supports cross-model reliability comparison.
+
+It evaluates simulated models across:
+
+- Accuracy
+- Consistency
+- Prompt robustness
+- Tool robustness
+- Context robustness
+- Judge agreement
+- Overall reliability score
+
+## Model Reliability Leaderboard
+
+The report generates a leaderboard comparing model reliability under stress-test conditions.
+
+
